@@ -1,0 +1,67 @@
+<%- include('layout', { body: `
+  <div class="home">
+    <p>Bienvenue, <strong>${user.username}</strong> 💖</p>
+
+    <!-- Bloc publications -->
+    <section class="posts-section">
+      <h2>Publications</h2>
+
+      <form method="POST" action="/posts" class="post-form">
+        <textarea name="content" rows="3" placeholder="Exprime-toi sur DAMIBOOK..." required></textarea>
+        <button type="submit">Publier 💞</button>
+      </form>
+
+      <div class="posts-list">
+        ${posts.length === 0
+          ? '<p>Aucune publication pour le moment.</p>'
+          : posts.map(p => `
+            <div class="post">
+              <div class="post-header">
+                <strong>${p.author.username}</strong>
+                <span class="post-date">${new Date(p.createdAt).toLocaleString()}</span>
+              </div>
+              <div class="post-content">
+                ${p.content}
+              </div>
+              <div class="post-comments">
+                <h4>Commentaires</h4>
+                <ul>
+                  ${comments
+                    .filter(c => c.post._id.toString() === p._id.toString())
+                    .map(c => `
+                      <li>
+                        <strong>${c.author.username}</strong> :
+                        ${c.content}
+                        <span class="comment-date">${new Date(c.createdAt).toLocaleString()}</span>
+                      </li>
+                    `).join('') || '<li>Aucun commentaire.</li>'}
+                </ul>
+                <form method="POST" action="/posts/${p._id}/comments" class="comment-form">
+                  <input type="text" name="content" placeholder="Commenter..." required>
+                  <button type="submit">Envoyer 💬</button>
+                </form>
+              </div>
+            </div>
+          `).join('')}
+      </div>
+    </section>
+
+    <!-- Bloc utilisateurs pour messages privés -->
+    <section class="users-section">
+      <h2>Messages privés</h2>
+      <p>Choisis une personne pour discuter en privé :</p>
+      <ul class="user-list">
+        ${others.length === 0
+          ? '<li>Aucun autre utilisateur pour l\'instant.</li>'
+          : others.map(u => `
+            <li>
+              ${u.username}
+              <a href="/chat/${u._id}">Ouvrir la discussion</a>
+            </li>
+          `).join('')}
+      </ul>
+    </section>
+
+    <a href="/logout" class="logout">Se déconnecter</a>
+  </div>
+` }) %>

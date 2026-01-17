@@ -1,0 +1,16 @@
+<%- include('layout', { body: `
+  <div class="auth-box">
+    <h2>Créer un compte</h2>
+    ${error ? `<p class="error">${error}</p>` : ''}
+    <form method="POST" action="/register">
+      <label>Pseudo</label>
+      <input type="text" name="username" required>
+
+      <label>Mot de passe</label>
+      <input type="password" name="password" required>
+
+      <button type="submit">S'inscrire</button>
+    </form>
+    <p>Déjà un compte ? <a href="/login">Se connecter</a></p>
+  </div>
+` }) %>

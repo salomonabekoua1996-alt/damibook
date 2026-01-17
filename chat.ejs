@@ -1,0 +1,30 @@
+<%- include('layout', { body: `
+  <div class="chat-page">
+    <h2>Discussion avec ${other.username} 💌</h2>
+
+    <div class="chat-box">
+      ${messages.length === 0
+        ? '<p>Aucun message pour le moment. Commence la discussion 💖</p>'
+        : messages.map(m => `
+          <div class="msg ${m.from._id.toString() === me._id.toString() ? 'me' : 'them'}">
+            <div class="msg-author">
+              ${m.from._id.toString() === me._id.toString() ? 'Moi' : m.from.username}
+            </div>
+            <div class="msg-content">
+              ${m.content}
+            </div>
+            <div class="msg-time">
+              ${new Date(m.createdAt).toLocaleString()}
+            </div>
+          </div>
+        `).join('')}
+    </div>
+
+    <form method="POST" action="/chat/${other._id}" class="chat-form">
+      <textarea name="content" rows="3" placeholder="Écrire un message..." required></textarea>
+      <button type="submit">Envoyer 💘</button>
+    </form>
+
+    <p><a href="/">⬅ Retour à l'accueil</a></p>
+  </div>
+` }) %>
