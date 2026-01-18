@@ -21,7 +21,7 @@ app.use(session({
   saveUninitialized: false
 }));
 
-// Connexion MongoDB (mets ici ton URI ou utilise process.env.MONGO_URL)
+// Connexion MongoDB (mets ici ton URI Render dans MONGO_URL)
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/damibook';
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
@@ -32,7 +32,7 @@ mongoose.connect(MONGO_URL, {
   console.error('MongoDB connection error:', err);
 });
 
-// Schéma utilisateur simple
+// Schéma utilisateur
 const userSchema = new mongoose.Schema({
   username: String,
   email: String,
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Middleware pour protéger les pages
+// Middleware de protection
 function requireLogin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect('/login');
@@ -55,7 +55,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  // on envoie toujours error pour EJS
+  res.render('login', { error: null });
 });
 
 app.post('/login', async (req, res) => {
@@ -73,7 +74,7 @@ app.post('/login', async (req, res) => {
     res.redirect('/home');
   } catch (err) {
     console.error(err);
-    res.status(500).send('Erreur serveur');
+    res.status(500).render('login', { error: 'Erreur serveur' });
   }
 });
 
